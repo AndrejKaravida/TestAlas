@@ -1,0 +1,21 @@
+<div class="container">
+  <mat-card class="card">
+    <mat-card-header> </mat-card-header>
+    <mat-card class="card2">
+      <input
+        matInput
+        class="input"
+        [(ngModel)]="text"
+        (input)="onSearchChange($event.target.value)"
+      />
+    </mat-card>
+
+    <div>{{ counter | formatTime }} {{ translatingText }}</div>
+
+    <div class="text-t">Translated text: {{ lastTranslatedText }}</div>
+
+    <button mat-raised-button color="success" (click)="translate()">
+      OK - continue
+    </button>
+  </mat-card>
+</div>

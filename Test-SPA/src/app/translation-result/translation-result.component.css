@@ -1,0 +1,53 @@
+.card {
+  height: 400px;
+  max-width: 400px;
+  background-color: rgba(235, 233, 233);
+  border-radius: 3px;
+  padding: 0px;
+  border-style: solid;
+  border-color: rgb(136, 7, 7);
+  border-width: 2px;
+}
+
+.text-t {
+  margin-top: 20px;
+  margin-left: 20px;
+  font-size: 20px;
+}
+
+.mat-success {
+  background-color: rgb(255, 223, 39);
+  color: rgb(12, 11, 11);
+  margin-top: 200px;
+  margin-left: 65%;
+}
+
+.mat-card-header {
+  background-color: rgb(136, 7, 7);
+  padding: 5px;
+  height: 80px;
+  border-radius: 3px;
+}
+
+.container {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 100px;
+}
+@media (min-width: 768px) {
+  .container {
+    width: 750px;
+  }
+}
+@media (min-width: 992px) {
+  .container {
+    width: 970px;
+  }
+}
+@media (min-width: 1200px) {
+  .container {
+    width: 1170px;
+  }
+}
