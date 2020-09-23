@@ -29,10 +29,10 @@ namespace TestApi.Migrations
                     b.Property<string>("EnglishText")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("From")
+                    b.Property<string>("FirstLanguageText")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SerbianText")
+                    b.Property<string>("From")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Time")

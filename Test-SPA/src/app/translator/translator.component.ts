@@ -69,7 +69,7 @@ export class TranslatorComponent implements OnInit {
       return;
     }
 
-    if (this.text === this.lastTranslatedText) {
+    if (this.text === this.lastRequestOnFirstLanguage) {
       this.router.navigate(['/translator-result']);
     } else {
       this.buttonPressed();
@@ -81,15 +81,23 @@ export class TranslatorComponent implements OnInit {
       textRequest: this.text,
     };
 
-    this.translationService
-      .getTranslation(searchRequest)
-      .subscribe((response) => {
+    this.translationService.getTranslation(searchRequest).subscribe(
+      (response) => {
         this.translatingText = '';
         this.lastRequestOnFirstLanguage = this.text;
         this.translatedText = response.englishText;
         this.lastTranslatedText = this.translatedText;
         this.stop = false;
-      });
+        this.translationService.updateDataSelection(response.englishText);
+        this.translationService.updateLastTranslations(response.englishText);
+        this.translationService.updateLastTranslationsonFirstLanguage(
+          this.text
+        );
+      },
+      (error) => {
+        alert('Server je preopterecen molim vas pokusajte kasnije');
+      }
+    );
   }
 
   buttonPressed() {

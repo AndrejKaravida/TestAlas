@@ -26,7 +26,7 @@ namespace TestApi.Persistence
 
         public TranslationResult GetTranslation(string text)
         {
-            return _context.TranslationResults.Where(x => x.SerbianText == text).FirstOrDefault();
+            return _context.TranslationResults.Where(x => x.FirstLanguageText == text).FirstOrDefault();
         }
 
         public async Task<bool> SaveAsync()

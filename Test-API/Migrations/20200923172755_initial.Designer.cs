@@ -10,7 +10,7 @@ using TestApi.Persistence;
 namespace TestApi.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200921144523_initial")]
+    [Migration("20200923172755_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,46 +21,31 @@ namespace TestApi.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("TestApi.Core.Models.EnglishText", b =>
+            modelBuilder.Entity("TestApi.Core.Models.TranslationResult", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Text")
+                    b.Property<string>("EnglishText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstLanguageText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("From")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("To")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("EnglishTexts");
-                });
-
-            modelBuilder.Entity("TestApi.Core.Models.SerbianText", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("EnglishTextId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EnglishTextId");
-
-                    b.ToTable("SerbianTexts");
-                });
-
-            modelBuilder.Entity("TestApi.Core.Models.SerbianText", b =>
-                {
-                    b.HasOne("TestApi.Core.Models.EnglishText", "EnglishText")
-                        .WithMany()
-                        .HasForeignKey("EnglishTextId");
+                    b.ToTable("TranslationResults");
                 });
 #pragma warning restore 612, 618
         }

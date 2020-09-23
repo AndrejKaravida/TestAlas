@@ -1,18 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using System.Linq;
 using TestApi.Core.IRepository;
 using TestApi.Persistence;
+using TestApi.Responses;
 
 namespace TestApi
 {
@@ -41,6 +38,22 @@ namespace TestApi
                 .AllowAnyHeader()
                 .AllowCredentials());
             });
+
+            services.AddControllers().AddFluentValidation(config => config.RegisterValidatorsFromAssemblyContaining<Startup>())
+               .ConfigureApiBehaviorOptions(opts =>
+               {
+                   opts.InvalidModelStateResponseFactory = context =>
+                   {
+                       var errors = context.ModelState
+                         .Where(x => x.Value.Errors.Any())
+                         .SelectMany(field => field.Value.Errors.Select(fieldError => new ErrorModel()
+                         {
+                             FieldName = field.Key,
+                             Message = fieldError.ErrorMessage
+                         }));
+                       return new BadRequestObjectResult(new ErrorResponse(errors.ToList()));
+                   };
+               });
 
         }
 

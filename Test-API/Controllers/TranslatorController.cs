@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
+using System.Net;
 using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 using System.Xml;
@@ -50,64 +51,73 @@ namespace TestApi.Controllers
             request.AddParameter("application/json", "{ \"text\":" + "\"" + searchRequest.TextRequest + "\"}", ParameterType.RequestBody);
             IRestResponse response = client.Execute(request);
 
-            var english_text = response.Content.ToString();
-
-            english_text = english_text.Remove(0, 85).ToString();
-
-            do
+            if(response.StatusCode == HttpStatusCode.OK)
             {
-                english_text = english_text.Remove(0, 1);
+                var english_text = response.Content.ToString();
+
+                english_text = english_text.Remove(0, 85).ToString();
+
+                do
+                {
+                    english_text = english_text.Remove(0, 1);
+                }
+                while (english_text[1] != '3');
+
+                english_text = english_text.Remove(0, 20).ToString();
+                english_text = english_text.Remove(english_text.Length - 4, 4).ToString();
+
+                var source_language = response.Content.ToString();
+
+                source_language = source_language.Remove(0, 35).ToString();
+
+                do
+                {
+                    source_language = source_language.Remove(source_language.Length - 1, 1);
+                }
+                while (source_language[source_language.Length - 1] != '2');
+
+                source_language = source_language.Remove(source_language.Length - 5, 5);
+
+                var destination_language = response.Content.ToString();
+
+                destination_language = destination_language.Remove(0, 75).ToString();
+
+                do
+                {
+                    destination_language = destination_language.Remove(destination_language.Length - 1, 1);
+                }
+                while (destination_language[destination_language.Length - 1] != '3');
+
+                destination_language = destination_language.Remove(destination_language.Length - 4, 4);
+
+                TranslationResult tr = new TranslationResult()
+                {
+                    FirstLanguageText = searchRequest.TextRequest,
+                    EnglishText = english_text,
+                    From = source_language,
+                    To = destination_language,
+                    Time = DateTime.Now
+                };
+
+                _translationRepository.Add(tr);
+
+                await _translationRepository.SaveAsync();
+
+                Translation translationToReturn = new Translation()
+                {
+                    EnglishText = tr.EnglishText
+                };
+
+                SaveToXml();
+
+                return Ok(translationToReturn);
             }
-            while (english_text[0] != '3');
-
-            english_text = english_text.Remove(0, 20).ToString();
-            english_text = english_text.Remove(english_text.Length - 4, 4).ToString();
-
-            var source_language = response.Content.ToString();
-
-            source_language = source_language.Remove(0, 35).ToString();
-
-            do
+            else
             {
-                source_language = source_language.Remove(source_language.Length -1, 1);
+                return BadRequest("Server je preopterecen pokusajte malo kasnije");
             }
-            while (source_language[source_language.Length - 1] != '2');
 
-            source_language = source_language.Remove(source_language.Length - 5, 5);
-
-            var destination_language = response.Content.ToString();
-
-            destination_language = destination_language.Remove(0, 75).ToString();
-
-            do
-            {
-                destination_language = destination_language.Remove(destination_language.Length - 1, 1);
-            }
-            while (destination_language[destination_language.Length - 1] != '3');
-
-            destination_language = destination_language.Remove(destination_language.Length - 4, 4);
-
-            TranslationResult tr = new TranslationResult()
-            {
-                SerbianText = searchRequest.TextRequest,
-                EnglishText = english_text,
-                From = source_language,
-                To = destination_language,
-                Time = DateTime.Now
-            };
-
-            _translationRepository.Add(tr);
-
-            await _translationRepository.SaveAsync();
-
-            Translation translationToReturn = new Translation()
-            {
-                EnglishText = tr.EnglishText
-            };
-
-            SaveToXml();
-
-            return Ok(translationToReturn);
+           
         }
 
 
